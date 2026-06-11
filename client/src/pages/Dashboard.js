@@ -24,17 +24,25 @@ export default function Dashboard() {
   }, []);
 
   const fetchJobs = async () => {
+  try {
     const res = await axios.get('/jobs');
     setJobs(res.data);
-  };
+  } catch (err) {
+    console.log('Error fetching jobs:', err.message);
+  }
+};
 
-  const handleAdd = async (e) => {
-    e.preventDefault();
+const handleAdd = async (e) => {
+  e.preventDefault();
+  try {
     await axios.post('/jobs', form);
     setForm({ company: '', role: '', status: 'Applied', jobUrl: '', notes: '' });
     setShowForm(false);
     fetchJobs();
-  };
+  } catch (err) {
+    alert('Error adding job: ' + (err.response?.data?.message || err.message));
+  }
+};
 
   const handleDelete = async (id) => {
     await axios.delete(`/jobs/${id}`);
